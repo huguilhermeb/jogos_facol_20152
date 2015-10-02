@@ -1,3 +1,4 @@
+--TESTE DO GIT--
 -- BUMP
 bump = require 'bump'
 
