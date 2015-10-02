@@ -5,7 +5,6 @@ bump = require 'bump'
 joysticks = love.joystick.getJoysticks()
 joystick  = joysticks[1]
 
---ok
 -- OTHERS REQUIRES
 require 'util'
 require 'camera'
