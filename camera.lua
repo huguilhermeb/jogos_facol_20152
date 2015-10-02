@@ -1,12 +1,12 @@
-camera = {}
-camera._x = 0
-camera._y = 0
-camera.scaleX = 1
-camera.scaleY = 1
+camera          = {}
+camera._x       = 0
+camera._y       = 0
+camera.scaleX   = 1
+camera.scaleY   = 1
 camera.rotation = 0
 
-function camera:set()
-  love.graphics.push()--armazena em uma pilha as coordenadas
+function camera:set()  
+  love.graphics.push() --armazena em uma pilha as coordenadas
   love.graphics.rotate(-self.rotation)
   love.graphics.scale(1 / self.scaleX, 1 / self.scaleY) -- escala do sistema
   love.graphics.translate(-self._x, -self._y) -- 
