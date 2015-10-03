@@ -73,6 +73,8 @@ function love.joystickreleased(joystick, b)
   
 end
 
+
+
 -- EVENT ON PRESS
 function love.keypressed(key)
 
@@ -146,70 +148,110 @@ function love.keyreleased(key)
 end
 
 colisaoBola = function(ball,other)
-  
-  --[[if other.nome == "jogador" then
-    return "touch"
-  end--]]
-  
-  return "touch"
-  
+    
+  for x=1,22 do
+    if other.nome == "player" .. x then
+      return "touch",other.num
+    end
+  end
+
 end
 
-manterpPosseBola = function(dt)
-   
-  if player[currentPlayer._P1].idle == "true" then
+colisaoJogador = function(player,other)
+   if other.nome == "bola" then
+    return "touch",player.num
+  end
+end
+
+
+--[[roubaBola = function(dt)
+  manterPosseBola(dt)
+end--]]
+
+
+manterPosseBola = function(dt,id)
+    
+  if player[id].controller == 'P1' then
+    currentPlayer._P1 = id
+  else
+    currentPlayer._P2 = id
+  end
+    
+  if player[id].direction == "up" then
+    
+      ball.x = sprite[id].px + 50
+      ball.y = sprite[id].py + 50--100
+              
+  elseif player[id].direction == "right" then
+    
+      ball.x = sprite[id].px + 80--100
+      ball.y = sprite[id].py + 80--100
+  
+  elseif player[id].direction == "down" then
+    
+      ball.x = sprite[id].px + 50--100
+      ball.y = sprite[id].py + 80--100
+  
+  else
+    
+      ball.x = sprite[id].px
+      ball.y = sprite[id].py + 80--100
       
-    if player[currentPlayer._P1].direction == "up" then
-      
-        ball.x = sprite[currentPlayer._P1].px + 60
-        ball.y = sprite[currentPlayer._P1].py + 100
-                
-    elseif p.direction == "right" then
-      
-        ball.x = sprite[currentPlayer._P1].px + 110
-        ball.y = sprite[currentPlayer._P1].py + 135
-                
-    else
-      
-        ball.x = sprite[currentPlayer._P1].px
-        ball.y = sprite[currentPlayer._P1].py + 135
-        
+  end
+  
+  -- KEYBOARD  
+  if player[id].controller == 'P1' then
+    
+    if player[id].direction == "up" and  love.keyboard.isDown('up') then     
+        ball.x = sprite[id].px + 50
+        ball.y = sprite[id].py + 50--100
+        moveBola(dt)        
+    end
+     
+    if player[id].direction == "right" and  love.keyboard.isDown('right') then      
+        ball.x = sprite[id].px + 80--100
+        ball.y = sprite[id].py + 80--100
+        moveBola(dt)        
+    end
+    
+    if player[id].direction == "left" and  love.keyboard.isDown('left') then       
+        ball.y = sprite[id].py + 80--100
+        moveBola(dt)    
+    end
+    
+    if player[id].direction == "down" and  love.keyboard.isDown('down') then      
+        ball.x = sprite[id].px + 50
+        ball.y = sprite[id].py + 90--100
+        moveBola(dt)    
+    end
+  
+  -- JOYSTICK 
+  else
+    
+    if player[id].direction == "up" and  joystick:isDown(1) then     
+        ball.x = sprite[id].px + 50
+        ball.y = sprite[id].py + 50--100
+        moveBola(dt)        
+    end
+     
+    if player[id].direction == "right" and  joystick:isDown(2) then      
+        ball.x = sprite[id].px + 80--100
+        ball.y = sprite[id].py + 80--100
+        moveBola(dt)        
+    end
+    
+    if player[id].direction == "left" and  joystick:isDown(4) then       
+        ball.y = sprite[id].py + 80--100
+        moveBola(dt)    
+    end
+    
+    if player[id].direction == "down" and  joystick:isDown(3) then      
+        ball.x = sprite[id].px + 50
+        ball.y = sprite[id].py + 90--100
+        moveBola(dt)    
     end
     
   end
-    
-  if player[currentPlayer._P1].direction == "up" and  love.keyboard.isDown('up') then
-     
-      ball.x = sprite[currentPlayer._P1].px + 60
-      ball.y = sprite[currentPlayer._P1].py + 100
-      moveBola(dt)
-      
-  end
-   
-  if player[currentPlayer._P1].direction == "right" and  love.keyboard.isDown('right') then
-    
-      ball.x = sprite[currentPlayer._P1].px + 110
-      ball.y = sprite[currentPlayer._P1].py + 135
-      moveBola(dt)
-      
-  end
-  
-  if player[currentPlayer._P1].direction == "left" and  love.keyboard.isDown('left') then
-     
-      ball.y = sprite[currentPlayer._P1].py + 135
-      moveBola(dt)
-  
-  end
-  
-  if player[currentPlayer._P1].direction == "down" and  love.keyboard.isDown('down') then
-    
-      ball.x = sprite[currentPlayer._P1].px + 60
-      ball.y = sprite[currentPlayer._P1].py + 145
-      moveBola(dt)
-  
-  end
-  
-  player[currentPlayer._P1].idle = "true"
   
 end
 

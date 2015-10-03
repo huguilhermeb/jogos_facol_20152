@@ -2,7 +2,7 @@
 -- DEFINE QUAL JOGADOR ESTAMOS UTILIZANDO (VALORES PERMITIDOS DE 1 A 11 SENDO 11 O GOLEIRO)
 currentPlayer     = {}
 currentPlayer._P1 = 11
-currentPlayer._P2 = 10
+currentPlayer._P2 = 12
 
 -- VAMOS DEFINIR COMO SENDO O OBJETO QUE IRÁ GUARDAR AS INFORMAÇÕES DE CADA JOGADOR
 player = {}
@@ -39,12 +39,17 @@ j[8] = 'd'
 
 --quadMovie = function(self)
 
-for x=1,11 do
+for x=1,22 do
   
   player[x] = {}
-
+  
   -- CONTROLLER (P1 OR P2)
-  player[x].controller = 'P2'
+  
+  if x<=11 then
+    player[x].controller = 'P1'
+  else
+    player[x].controller = 'P2'
+  end
   
   -- PLAYER x ESTÁ PARADO
   player[x].idle = true
@@ -74,6 +79,10 @@ for x=1,11 do
   -- USADO PARA O MOVIMENTO, INDICA QUANTOS "BLOCOS" O PLAYER DEVE ANDAR
   -- ESTOU ATRIBUINDO AQUI CASO FUTURAMENTE SEJA NECESSÁRIO QUE CADA PLAYER TENHA UM "TIMER" DIFERENTE
   player[x].sqm = 5
+  
+  
+  player[x].nome = "player" .. x
+  player[x].num = x
 
 
   -- ### START KICK ### --
@@ -122,7 +131,13 @@ for x=1,11 do
 
   -- ### START SPRITE SHEET ### --
   sprite[x]        = {}
-  sprite[x].player = love.graphics.newImage('assets/images/player1.png')
+  
+  if x<=11 then
+    sprite[x].player = love.graphics.newImage('assets/images/player1.png')
+  else
+    sprite[x].player = love.graphics.newImage('assets/images/player2.png')
+  end
+  
   sprite[x].x      = 100
   sprite[x].y      = 100
   sprite[x].px     = 0
@@ -224,7 +239,9 @@ for x=1,11 do
   end
 
 end -- FOR PLAYER
-
+  
+  -- TIME 01
+  
   -- GOLEIRO
   sprite[1].px = 750
   sprite[1].py = 850
@@ -264,42 +281,58 @@ end -- FOR PLAYER
   -- ATACANTE DIREITO
   sprite[10].px = 3500
   sprite[10].py = 810
+  player[10].direction = 'up'
 
   -- ATACANTE ESQUERDO
   sprite[11].px = 3500
   sprite[11].py = 750
+  player[11].direction = 'down'
+  
 
-  --[[
-  sprite[1].px = 2000
-  sprite[1].py = 400
+  -- TIME 02 
   
-  sprite[1].px = 2000
-  sprite[1].py = 400
-  
-  sprite[1].px = 2000
-  sprite[1].py = 400
-  
-  sprite[1].px = 2000
-  sprite[1].py = 400
-  
-  sprite[1].px = 2000
-  sprite[1].py = 400
-  
-  sprite[1].px = 2000
-  sprite[1].py = 400
-  
-  sprite[1].px = 2000
-  sprite[1].py = 400
-  
-  sprite[1].px = 2000
-  sprite[1].py = 400
-  
-  sprite[1].px = 2000
-  sprite[1].py = 400
-  
-  sprite[1].px = 2000
-  sprite[1].py = 400
-  
-  sprite[1].px = 2000
-  sprite[1].py = 400
-  --]] 
+  -- GOLEIRO
+  sprite[12].px = 7000
+  sprite[12].py = 750
+
+  -- LATERAL DIREITO
+  sprite[13].px = 5000
+  sprite[13].py = 350
+
+  -- ZAGUEIRO DIREITO
+  sprite[14].px = 6000
+  sprite[14].py = 400
+
+  -- ZAQUEIRO ESQUERDO
+  sprite[15].px = 6000
+  sprite[15].py = 1200
+
+  -- LATERAL ESQUERDO
+  sprite[16].px = 2500
+  sprite[16].py = 1200
+
+  -- VOLANTE DIREITO
+  sprite[17].px = 5000
+  sprite[17].py = 1000
+
+  -- VOLANTE ESQUERDO
+  sprite[18].px = 5000
+  sprite[18].py = 600
+
+  -- MEIA DIREITO
+  sprite[19].px = 4000
+  sprite[19].py = 350
+
+  -- MEIA ESQUERDO
+  sprite[20].px = 4000
+  sprite[20].py = 1350
+
+  -- ATACANTE DIREITO
+  sprite[21].px = 3800
+  sprite[21].py = 750
+  player[21].direction = 'up'
+
+  -- ATACANTE ESQUERDO
+  sprite[22].px = 3800
+  sprite[22].py = 810
+  player[22].direction = 'down'
