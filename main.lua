@@ -5,6 +5,22 @@ bump = require 'bump'
 joysticks = love.joystick.getJoysticks()
 joystick  = joysticks[1]
 
+if not(joystick) then
+love.window.showMessageBox('Atenção', 'Conecte 01 (um) joystick. Não é possível iniciar a partida sem ele.', "error")
+love.event.quit()
+end
+
+-- CHOQUE
+choque      = {}
+choque._C1  = 0--variavel para guardda id do jogador com a posse de bola
+--choque._C2  = 0--false
+choque._T   = 0
+
+iniciaPartida = false
+
+-- GLOBAL TIMER
+timer = 0
+
 -- OTHERS REQUIRES
 require 'util'
 require 'camera'
@@ -42,7 +58,7 @@ function love.load()
   -- CONFIGURAÇÃO DA CAMERA
   window        = {}
   window.width  = 5500--2100 -- com essa variavel definir o limite de movimentação da camera eixo x
-  window.height = 1500-- com essa variavel definir o limite de movimentação da camera eixo y
+  window.height = 3000--1500-- com essa variavel definir o limite de movimentação da camera eixo y
   camera:setBounds(-900,-900, window.width,window.height)--[[player.x,player.y)--]]--window.width, window.height)--limitar movimentação da câmera
   camera:scale(3)
 
@@ -54,16 +70,16 @@ function love.draw()
   camera:set()
   
   -- WRITE BACKGROUND
-  love.graphics.draw( background,0,0,0,2,2,0,0,0,0 )
+  love.graphics.draw( background,0,0,0,3,3,0,0,0,0 )
   
    -- WRITE BOLA
   if ball.stop == true and ball.count == 1 then
     
-    love.graphics.draw( ball.sprite,quadsBall[1],ball.x,ball.y,0.4,0.4 )
+    love.graphics.draw( ball.sprite,quadsBall[1],ball.x,ball.y,0.4,0.4)
   
   else
     -- PRA QUE SERVE A VARIÁVEL BOLA ABAIXO?
-    love.graphics.draw( ball.sprite, bola, ball.x, ball.y, 0.4, 0.4 )
+    love.graphics.draw( ball.sprite, bola, ball.x, ball.y, 0.4, 0.4)
     ball.stop=true
       
   end
@@ -110,56 +126,56 @@ function love.draw()
 
   end
   
-  --love.graphics.print(a,3550,810,0,4,4)
+  love.graphics.print("id jog = "..choque._C1,4900,2400,0,4,4)
+  love.graphics.print("lenB = "..a,4900,2500,0,4,4)
   
   camera:unset()--retona padrão da camera
 end -- DRAW
 
 function love.update(dt)
+    timer = timer + dt
+  
+    --world:update(ball,ball.x,ball.y,10,10)
     
-  actualXB, actualYB, colsB, lenB = world:check(ball, ball.x, ball.y,colisaoBola)
-  ball.x, ball.y = actualXB, actualYB  
+    if timer > (choque._T + 2) then
+    actualXB, actualYB, colsB, lenB = world:check(ball, ball.x, ball.y,colideComJogador)
+    --ball.x, ball.y = actualXB, actualYB 
+    world:update(ball,actualXB, actualYB,10,10)
+    end
+    
+    --world:update(ball,actualXB, actualYB,10,10)
   
   if lenB == 0 then
-    
-    ball.x, ball.y = actualXB, actualYB
+    --ball.x, ball.y = actualXB, actualYB
     world:move(ball, ball.x, ball.y)
-  
   end
 
+  if lenB then
   for i=1,lenB do
-    local otherType,id = colsB[i].type,colsB[i].other.num
+    local tipoColisao,id = colsB[i].type,colsB[i].other.num
     a = lenB
-    if otherType == "touch" then
-     manterPosseBola(dt,id)
+    if tipoColisao == "touch" then
+      manterPosseBola(dt,id)
     end
+  end
   end
   
   for x=1,22 do
     --love.graphics.setColor( 120, 13, 45)
-    world:update(player[x],sprite[x].px,sprite[x].py,101,101)
+    world:update(player[x],sprite[x].px,sprite[x].py,100,100)
     
-    
-    actualXP, actualYP, colsP, lenP = world:check(player[x], sprite[x].px, sprite[x].py,colisaoJogador)
-    sprite[x].px, sprite[x].py = actualXP, actualYP
-    
+    actualXP, actualYP, colsP, lenP = world:check(player[x], sprite[x].px, sprite[x].py)--pode tentar passa o id do jogador no colisaojogador
+    --sprite[x].px, sprite[x].py = actualXP, actualYP
     
     if lenP == 0 then
-      
-      sprite[x].px, sprite[x].py = actualXP, actualYP
+      --sprite[x].px, sprite[x].py = actualXP, actualYP
       world:move(player[x], sprite[x].px, sprite[x].py)
-    
     end
 
-
-    for i=1,lenP do
-      local otherType,id = colsP[i].type,colsP[i].other.num
-      if otherType == "touch" then
-        manterPosseBola(dt,id)
-      end
-    end
-
-  end -- FOR
+    --[[for i=1,lenP do
+        
+    end--]]
+  end--FIM FOR
   
   -- START P1
   if player[currentPlayer._P1].action ~= false then

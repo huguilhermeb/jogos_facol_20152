@@ -2,7 +2,7 @@
 -- DEFINE QUAL JOGADOR ESTAMOS UTILIZANDO (VALORES PERMITIDOS DE 1 A 11 SENDO 11 O GOLEIRO)
 currentPlayer     = {}
 currentPlayer._P1 = 11
-currentPlayer._P2 = 12
+currentPlayer._P2 = 22
 
 -- VAMOS DEFINIR COMO SENDO O OBJETO QUE IRÁ GUARDAR AS INFORMAÇÕES DE CADA JOGADOR
 player = {}
@@ -81,8 +81,10 @@ for x=1,22 do
   player[x].sqm = 5
   
   
-  player[x].nome = "player" .. x
-  player[x].num = x
+  player[x].nome  = "player" .. x
+  player[x].num   = x
+  player[x].tipo  = 'player'
+  player[x].bola  = false -- player não tem posse de bola
 
 
   -- ### START KICK ### --
@@ -243,96 +245,106 @@ end -- FOR PLAYER
   -- TIME 01
   
   -- GOLEIRO
-  sprite[1].px = 750
-  sprite[1].py = 850
+  sprite[1].px = 2400
+  sprite[1].py = 2700
 
   -- LATERAL DIREITO
-  sprite[2].px = 2500
-  sprite[2].py = 1800
+  sprite[2].px = 3700
+  sprite[2].py = 1900
 
   -- ZAGUEIRO DIREITO
-  sprite[3].px = 1900
-  sprite[3].py = 1200
+  sprite[3].px = 3500
+  sprite[3].py = 3100
 
   -- ZAQUEIRO ESQUERDO
-  sprite[4].px = 2000
-  sprite[4].py = 400
+  sprite[4].px = 3500
+  sprite[4].py = 2400
 
   -- LATERAL ESQUERDO
-  sprite[5].px = 2500
-  sprite[5].py = 100
+  sprite[5].px = 3500
+  sprite[5].py = 3800
 
   -- VOLANTE DIREITO
-  sprite[6].px = 2500
-  sprite[6].py = 600
+  sprite[6].px = 4000
+  sprite[6].py = 3000
 
   -- VOLANTE ESQUERDO
-  sprite[7].px = 2650
-  sprite[7].py = 1000
+  sprite[7].px = 4000
+  sprite[7].py = 2500
 
   -- MEIA DIREITO
-  sprite[8].px = 3300
-  sprite[8].py = 1350
+  sprite[8].px = 4500
+  sprite[8].py = 3400
 
   -- MEIA ESQUERDO
-  sprite[9].px = 3300
-  sprite[9].py = 350
+  sprite[9].px = 4500
+  sprite[9].py = 2300
 
   -- ATACANTE DIREITO
-  sprite[10].px = 3500
-  sprite[10].py = 810
+  sprite[10].px = 4900
+  sprite[10].py = 2900
   player[10].direction = 'up'
 
   -- ATACANTE ESQUERDO
-  sprite[11].px = 3500
-  sprite[11].py = 750
+  sprite[11].px = 4900
+  sprite[11].py = 2700
   player[11].direction = 'down'
   
 
   -- TIME 02 
   
   -- GOLEIRO
-  sprite[12].px = 7000
-  sprite[12].py = 750
+  sprite[12].px = 7500
+  sprite[12].py = 2700
+  player[12].direction = 'left'
 
   -- LATERAL DIREITO
-  sprite[13].px = 5000
-  sprite[13].py = 350
+  sprite[13].px = 6300
+  sprite[13].py = 1900
+  player[13].direction = 'left'
 
   -- ZAGUEIRO DIREITO
-  sprite[14].px = 6000
-  sprite[14].py = 400
+  sprite[14].px = 6400
+  sprite[14].py = 2400
+  player[14].direction = 'left'
 
   -- ZAQUEIRO ESQUERDO
-  sprite[15].px = 6000
-  sprite[15].py = 1200
+  sprite[15].px = 6400
+  sprite[15].py = 3100
+  player[15].direction = 'left'
 
   -- LATERAL ESQUERDO
-  sprite[16].px = 2500
-  sprite[16].py = 1200
+  sprite[16].px = 6500
+  sprite[16].py = 3800
+  player[16].direction = 'left'
 
   -- VOLANTE DIREITO
-  sprite[17].px = 5000
-  sprite[17].py = 1000
+  sprite[17].px = 6000
+  sprite[17].py = 2500
+  player[17].direction = 'left'
 
   -- VOLANTE ESQUERDO
-  sprite[18].px = 5000
-  sprite[18].py = 600
+  sprite[18].px = 6000
+  sprite[18].py = 3000
+  player[18].direction = 'left'
 
   -- MEIA DIREITO
-  sprite[19].px = 4000
-  sprite[19].py = 350
+  sprite[19].px = 5600
+  sprite[19].py = 2300
+  player[19].direction = 'left'
 
   -- MEIA ESQUERDO
-  sprite[20].px = 4000
-  sprite[20].py = 1350
+  sprite[20].px = 5500
+  sprite[20].py = 3400
+  player[20].direction = 'left'
 
   -- ATACANTE DIREITO
-  sprite[21].px = 3800
-  sprite[21].py = 750
-  player[21].direction = 'up'
+  sprite[21].px = 5000
+  sprite[21].py = 2300
+  player[21].direction = 'down'
 
   -- ATACANTE ESQUERDO
-  sprite[22].px = 3800
-  sprite[22].py = 810
-  player[22].direction = 'down'
+  sprite[22].px = 5000
+  sprite[22].py = 3200
+  player[22].direction = 'up'
+  

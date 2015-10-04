@@ -1,11 +1,12 @@
 -- DECLARING THE BALL 
 ball          = {}
 ball.sprite   = love.graphics.newImage("assets/images/ball.png")
-ball.x        = 3550 -- x/2
-ball.y        = 900 -- y/2
+ball.x        = 4970--3550 -- x/2
+ball.y        = 2785--900 -- y/2
 ball.speed    = 90
 ball.stop     = true
 ball.nome     = "bola"
+ball.emPosse  = false
 ball.height   = 64
 ball.width    = 64
 ball.count    = 1

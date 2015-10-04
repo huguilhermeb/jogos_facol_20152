@@ -147,27 +147,47 @@ function love.keyreleased(key)
 
 end
 
-colisaoBola = function(ball,other)
-    
-  for x=1,22 do
-    if other.nome == "player" .. x then
-      return "touch",other.num
-    end
+colideComJogador = function(ball,other)
+  if other.tipo == "player" --[[and other.bola == false--]] then
+    --other.bola = true
+    --return "touch",other.num
+    --for i=1,22 do
+      --if other.nome == "player" then
+       -- player[choque._C1].bola = false
+        choque._C1 = other.num
+        return "touch",other.num
+     -- end
+  --  end
   end
-
 end
 
+--[[
+/*
+ * SE O JOGADOR COLIDIR COM O JOGADOR QUE TEM A BOLA
+ */
+--]]
 colisaoJogador = function(player,other)
-   if other.nome == "bola" then
-    return "touch",player.num
+  if other.nome == "bola" then
+    choque._C1 = player.num -- coloca no for caso num passa vazio
+    player.bola = true
+    return "touch"--,player.num
   end
 end
 
+roubaBola = function(dt,numJ)
+  --manterPosseBola(dt)
+  ball.emPosse = true
+  manterPosseBola(dt,numJ)
+end
 
---[[roubaBola = function(dt)
-  manterPosseBola(dt)
-end--]]
-
+iniciaPartida = function()
+  if iniciaPartida == false then
+        iniciaPartida = true
+        manterPosseBola(dt,11)
+     else
+        manterPosseBola(dt,id)
+     end
+end
 
 manterPosseBola = function(dt,id)
     
@@ -255,7 +275,7 @@ manterPosseBola = function(dt,id)
   
 end
 
-
+-- SOMENTE PARA TROCAR O QUAD DA IMAGEM DA BOLA
 moveBola = function(self,dt)
   
   if ball.count <= ball.maxQuad then
