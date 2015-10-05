@@ -62,6 +62,9 @@ function love.load()
   camera:setBounds(-900,-900, window.width,window.height)--[[player.x,player.y)--]]--window.width, window.height)--limitar movimentação da câmera
   camera:scale(3)
 
+  --COLISOES (em andamento)
+  --function bump.collision()
+  --function bump.shouldCollide()
 end -- LOAD
 
 function love.draw()
