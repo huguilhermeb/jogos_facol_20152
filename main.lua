@@ -1,243 +1,312 @@
+-- BUMP
+bump = require 'bump'
+
+-- JOYSTICK
+joysticks = love.joystick.getJoysticks()
+joystick  = joysticks[1]
+
+if not(joystick) then
+love.window.showMessageBox('Atenção', 'Conecte 01 (um) joystick. Não é possível iniciar a partida sem ele.', "error")
+love.event.quit()
+end
+
+-- CHOQUE
+choque      = {}
+choque._C1  = 0--variavel para guardda id do jogador com a posse de bola
+--choque._C2  = 0--false
+choque._T   = 0
+
+iniciaPartida = false
+
+-- GLOBAL TIMER
+timer = 0
+
+-- OTHERS REQUIRES
+require 'util'
+require 'camera'
+require 'player'
+require 'ball'
+require 'functions'
+
 function love.load()
+  a = 0
   
-  -- WIDTH AND HEIGHT
-  w, h = love.window.getDimensions()
-  
-  -- CENTER
-  centerW = (w * 0.5) - 40
-  centerH = (h * 0.5) - 70
-  
-  -- BACKGROUND (CAMPO)
-  background = love.graphics.newImage("assets/images/background.jpg")
-
-  -- DEFINE QUAL JOGADOR ESTAMOS UTILIZANDO (VALORES PERMITIDOS DE 1 A 11 SENDO 11 O GOLEIRO)
-  currentPlayer = 1 
-
-  -- VAMOS DEFINIR COMO SENDO O OBJETO QUE IRÁ GUARDAR AS INFORMAÇÕES DE CADA JOGADOR
-  player = {}
-  
-  -- VAMOS DEFINIR COMO SENDO O OBJETO QUE IRÁ GUARDAR AS SPRITES DE CADA JOGADOR
-  sprite = {}
-  
-  -- VAMOS DEFINIR COMO SENDO O OBJETO QUE IRÁ GUARDAR 'QUADS' DE CADA JOGADOR
-  quads = {}
-  
-  -- VAMOS DEFINIR COMO SENDO O OBJETO QUE IRÁ GUARDAR AS AÇÕES DE CADA JOGADOR
-  action          = {}
-  action['kick']  = {}
-
-  for x=1,1 do
+  -- DECLARING THE NEW WORLD
+  world = bump.newWorld()
     
-    player[x] = {}
+  -- ADD PLAYERS TO THE WORLD
+  --[[for x=1,11 do
+      world:add(sprite[x],sprite[x].px,sprite[x].py,100,100)
+  end--]]
+  for x=1,22 do
+      world:add(player[x],0,0,100,100)
+  end
+  
+  -- ADD THE BALL TO THE WORLD
+  world:add(ball,0,0,10,10)
+  
+  -- BACKGROUND
+  background = love.graphics.newImage("assets/images/background.png")
+  
+  -- BACKGROUND COORDINATES (posiçao inicial da bola)
+  x,y = background:getDimensions()
+ 
+  -- variaveis para receber parametros da colisão
+  actualXB, actualYB, colsB, lenB = 0
+  actualXP, actualYP, colsP, lenP = 0
+  
+  -- CONFIGURAÇÃO DA CAMERA
+  window        = {}
+  window.width  = 5500--2100 -- com essa variavel definir o limite de movimentação da camera eixo x
+  window.height = 3000--1500-- com essa variavel definir o limite de movimentação da camera eixo y
+  camera:setBounds(-900,-900, window.width,window.height)--[[player.x,player.y)--]]--window.width, window.height)--limitar movimentação da câmera
+  camera:scale(3)
 
-    -- PLAYER x ESTÁ PARADO
-    player[x].idle = true
-
-    -- PLAYER x NÃO ESTÁ EXECUTANDO NENHUMA AÇÃO
-    player[x].action = false
-
-    -- SPEED (VELOCIDADE DO JOGADOR x)
-    player[x].speed = 0.2
-
-    -- DEFAULT DIRECTION
-    player[x].direction = 'right'
-
-    -- DEFAULT QUAD
-    player[x].quad = 1
-
-    -- MAX QUAD
-    player[x].maxQuad = 7
-
-    -- CONSTANT
-    -- USADO PARA O CALCULO DA VELOCIDADE
-    -- ESTOU ATRIBUINDO AQUI CASO FUTURAMENTE SEJA NECESSÁRIO QUE CADA PLAYER TENHA UM "TIMER" DIFERENTE
-    player[x].timer = 0.1
-    player[x].timeout = 0
-
-    -- CONSTANT
-    -- USADO PARA O MOVIMENTO, INDICA QUANTOS "BLOCOS" O PLAYER DEVE ANDAR
-    -- ESTOU ATRIBUINDO AQUI CASO FUTURAMENTE SEJA NECESSÁRIO QUE CADA PLAYER TENHA UM "TIMER" DIFERENTE
-    player[x].sqm = 5
-
-
-    -- ### START KICK ### --
-    action['kick'][x] = {}
-
-    -- DEFAULT QUAD
-    action['kick'][x].quad = 1
-
-    -- MAX QUAD
-    action['kick'][x].maxQuad = 4
-    -- ### END KICK ### --
-
-
-    -- ### START SPRITE SHEET ### --
-    sprite[x]        = {}
-    sprite[x].player = love.graphics.newImage('assets/images/player' .. x .. '.png')
-    sprite[x].x      = 75
-    sprite[x].y      = 108
-    sprite[x].px     = centerW
-    sprite[x].py     = centerH
-    -- ### END SPRITE SHEET ### --
-
-
-    -- QUADS
-    quads[x]           = {}
-    quads[x]['left']   = {}
-    quads[x]['right']  = {}
-    quads[x]['up']     = {}
-    quads[x]['down']   = {}
-
-    quads[x]['a']          = {}
-    quads[x]['a']['left']  = {}
-    quads[x]['a']['right'] = {}
-
-
-    -- DIRECTION
-    for i=1,player[x].maxQuad do
-
-      quads[x]['left'][i]  = love.graphics.newQuad( (i-1) * sprite[x].x, 0, sprite[x].x, sprite[x].y, sprite[x].player:getDimensions() )
-      quads[x]['right'][i] = love.graphics.newQuad( (i-1) * sprite[x].x, sprite[x].y, sprite[x].x, sprite[x].y, sprite[x].player:getDimensions() )
-      quads[x]['up'][i]    = love.graphics.newQuad( (i-1) * sprite[x].x, sprite[x].y * 2, sprite[x].x, sprite[x].y, sprite[x].player:getDimensions() )
-      quads[x]['down'][i]  = love.graphics.newQuad( (i-1) * sprite[x].x, sprite[x].y * 3, sprite[x].x, sprite[x].y, sprite[x].player:getDimensions() )
-
-    end  
-    quads[x]['up'][player[x].maxQuad+1] = love.graphics.newQuad( player[x].maxQuad * sprite[x].x, sprite[x].y * 2, sprite[x].x, sprite[x].y, sprite[x].player:getDimensions() )
-
-
-    -- KICK
-    for i=1,action['kick'][x].maxQuad do
-
-      quads[x]['a']['left'][i]  = love.graphics.newQuad( (i-1) * sprite[x].x, sprite[x].y * 4, sprite[x].x, sprite[x].y, sprite[x].player:getDimensions() )
-      quads[x]['a']['right'][i] = love.graphics.newQuad( (i-1) * sprite[x].x, sprite[x].y * 5, sprite[x].x, sprite[x].y, sprite[x].player:getDimensions() )
-
-    end
-
-  end -- FOR PLAYER
-
+  --COLISOES (em andamento)
+  --function bump.collision()
+  --function bump.shouldCollide()
 end -- LOAD
 
 function love.draw()
-
-  -- WRITE BACKGROUND
-  love.graphics.draw(background)
   
-  if player[currentPlayer].action ~= false then
+  -- desenha camera com os padrões especificados pela função
+  camera:set()
+  
+  -- WRITE BACKGROUND
+  love.graphics.draw( background,0,0,0,3,3,0,0,0,0 )
+  
+   -- WRITE BOLA
+  if ball.stop == true and ball.count == 1 then
     
-    -- if action['kick'][currentPlayer].quad <= action['kick'][currentPlayer].maxQuad
-    if action[player[currentPlayer].action][currentPlayer].quad <= action[player[currentPlayer].action][currentPlayer].maxQuad then
-      love.graphics.draw(sprite[currentPlayer].player, quads[currentPlayer]['a'][player[currentPlayer].direction][action[player[currentPlayer].action][currentPlayer].quad], sprite[currentPlayer].px, sprite[currentPlayer].py)
-    end
-    
-  elseif player[currentPlayer].quad <= player[currentPlayer].maxQuad and (player[currentPlayer].direction == 'left' or player[currentPlayer].direction == 'right' or player[currentPlayer].direction == 'up' or player[currentPlayer].direction == 'down') then
-    
-    love.graphics.draw(sprite[currentPlayer].player, quads[currentPlayer][player[currentPlayer].direction][player[currentPlayer].quad], sprite[currentPlayer].px, sprite[currentPlayer].py)
+    love.graphics.draw( ball.sprite,quadsBall[1],ball.x,ball.y,0.4,0.4)
+  
+  else
+    -- PRA QUE SERVE A VARIÁVEL BOLA ABAIXO?
+    love.graphics.draw( ball.sprite, bola, ball.x, ball.y, 0.4, 0.4)
+    ball.stop=true
       
-  end  
+  end
 
+  -- START P1
+  if player[currentPlayer._P1].action ~= false then
+
+    -- if action['kick'][currentPlayer._P1].quad <= action['kick'][currentPlayer._P1].maxQuad
+    if action[player[currentPlayer._P1].action][currentPlayer._P1].quad <= action[player[currentPlayer._P1].action][currentPlayer._P1].maxQuad then
+      love.graphics.draw(sprite[currentPlayer._P1].player, quads[currentPlayer._P1][button[player[currentPlayer._P1].action]][player[currentPlayer._P1].direction][action[player[currentPlayer._P1].action][currentPlayer._P1].quad], sprite[currentPlayer._P1].px, sprite[currentPlayer._P1].py)
+    end
+
+  elseif player[currentPlayer._P1].quad <= player[currentPlayer._P1].maxQuad and (player[currentPlayer._P1].direction == 'left' or player[currentPlayer._P1].direction == 'right' or player[currentPlayer._P1].direction == 'up' or player[currentPlayer._P1].direction == 'down') then
+
+    love.graphics.draw(sprite[currentPlayer._P1].player, quads[currentPlayer._P1][player[currentPlayer._P1].direction][player[currentPlayer._P1].quad], sprite[currentPlayer._P1].px, sprite[currentPlayer._P1].py)
+    --fim do desenha sprite
+
+  end
+  -- END P1
+
+  -- START P2
+  if player[currentPlayer._P2].action ~= false then
+
+    -- if action['kick'][currentPlayer._P2].quad <= action['kick'][currentPlayer._P2].maxQuad
+    if action[player[currentPlayer._P2].action][currentPlayer._P2].quad <= action[player[currentPlayer._P2].action][currentPlayer._P2].maxQuad then
+      love.graphics.draw(sprite[currentPlayer._P2].player, quads[currentPlayer._P2][button[player[currentPlayer._P2].action]][player[currentPlayer._P2].direction][action[player[currentPlayer._P2].action][currentPlayer._P2].quad], sprite[currentPlayer._P2].px, sprite[currentPlayer._P2].py)
+    end
+
+  elseif player[currentPlayer._P2].quad <= player[currentPlayer._P2].maxQuad and (player[currentPlayer._P2].direction == 'left' or player[currentPlayer._P2].direction == 'right' or player[currentPlayer._P2].direction == 'up' or player[currentPlayer._P2].direction == 'down') then
+
+    love.graphics.draw(sprite[currentPlayer._P2].player, quads[currentPlayer._P2][player[currentPlayer._P2].direction][player[currentPlayer._P2].quad], sprite[currentPlayer._P2].px, sprite[currentPlayer._P2].py)
+    --fim do desenha sprite
+
+  end
+  -- END P2
+
+  for x=1,22 do
+
+    if currentPlayer._P1 ~= x and currentPlayer._P2 ~= x then
+
+      love.graphics.draw(sprite[x].player, quads[x][player[x].direction][player[x].quad], sprite[x].px, sprite[x].py)
+
+    end
+
+  end
+  
+  love.graphics.print("id jog = "..choque._C1,4900,2400,0,4,4)
+  love.graphics.print("lenB = "..a,4900,2500,0,4,4)
+  
+  camera:unset()--retona padrão da camera
 end -- DRAW
 
 function love.update(dt)
+    timer = timer + dt
   
-  if player[currentPlayer].action ~= false then
+    --world:update(ball,ball.x,ball.y,10,10)
+    
+    if timer > (choque._T + 2) then
+    actualXB, actualYB, colsB, lenB = world:check(ball, ball.x, ball.y,colideComJogador)
+    --ball.x, ball.y = actualXB, actualYB 
+    world:update(ball,actualXB, actualYB,10,10)
+    end
+    
+    --world:update(ball,actualXB, actualYB,10,10)
+  
+  if lenB == 0 then
+    --ball.x, ball.y = actualXB, actualYB
+    world:move(ball, ball.x, ball.y)
+  end
 
-    player[currentPlayer].timer = player[currentPlayer].timer + dt
+  if lenB then
+  for i=1,lenB do
+    local tipoColisao,id = colsB[i].type,colsB[i].other.num
+    a = lenB
+    if tipoColisao == "touch" then
+      manterPosseBola(dt,id)
+    end
+  end
+  end
+  
+  for x=1,22 do
+    --love.graphics.setColor( 120, 13, 45)
+    world:update(player[x],sprite[x].px,sprite[x].py,100,100)
+    
+    actualXP, actualYP, colsP, lenP = world:check(player[x], sprite[x].px, sprite[x].py)--pode tentar passa o id do jogador no colisaojogador
+    --sprite[x].px, sprite[x].py = actualXP, actualYP
+    
+    if lenP == 0 then
+      --sprite[x].px, sprite[x].py = actualXP, actualYP
+      world:move(player[x], sprite[x].px, sprite[x].py)
+    end
 
-    if action[player[currentPlayer].action][currentPlayer].quad > action[player[currentPlayer].action][currentPlayer].maxQuad then
-      
-      player[currentPlayer].quad                                = 1
-      action[player[currentPlayer].action][currentPlayer].quad  = 1
-      player[currentPlayer].action                              = false      
+    --[[for i=1,lenP do
+        
+    end--]]
+  end--FIM FOR
+  
+  -- START P1
+  if player[currentPlayer._P1].action ~= false then
+
+    player[currentPlayer._P1].timer = player[currentPlayer._P1].timer + dt
+
+    if action[player[currentPlayer._P1].action][currentPlayer._P1].quad > action[player[currentPlayer._P1].action][currentPlayer._P1].maxQuad then
+
+      player[currentPlayer._P1].quad                                    = 1
+      action[player[currentPlayer._P1].action][currentPlayer._P1].quad  = 1
+      player[currentPlayer._P1].action                                  = false
 
     else
 
-      if player[currentPlayer].timer > 0.15 then
+      if player[currentPlayer._P1].timer > 0.15 then
 
-        player[currentPlayer].timer                               = 0.1
-        action[player[currentPlayer].action][currentPlayer].quad  = action[player[currentPlayer].action][currentPlayer].quad + 1
-                
+        player[currentPlayer._P1].timer                                   = 0.1
+        action[player[currentPlayer._P1].action][currentPlayer._P1].quad  = action[player[currentPlayer._P1].action][currentPlayer._P1].quad + 1
+
       end
 
-    end -- player[currentPlayer].action ~= false
+    end -- player[currentPlayer._P1].action ~= false
 
-  elseif player[currentPlayer].idle == false then
+  elseif player[currentPlayer._P1].idle == false then
 
-    player[currentPlayer].timer   = player[currentPlayer].timer + dt
-    player[currentPlayer].timeout = player[currentPlayer].timeout + dt
-    
-    if player[currentPlayer].timeout > 1.2 then
-      player[currentPlayer].speed = 0.17
-      player[currentPlayer].sqm   = 15
+    player[currentPlayer._P1].timer   = player[currentPlayer._P1].timer + dt
+    player[currentPlayer._P1].timeout = player[currentPlayer._P1].timeout + dt
+
+    if player[currentPlayer._P1].timeout > 1.2 then
+
+      player[currentPlayer._P1].speed = 0.17
+      player[currentPlayer._P1].sqm   = 15
+
     end
 
-    if player[currentPlayer].timer > player[currentPlayer].speed then
+    if player[currentPlayer._P1].timer > player[currentPlayer._P1].speed then
 
-      player[currentPlayer].timer = 0.1
-      player[currentPlayer].quad  = player[currentPlayer].quad + 1      
+      player[currentPlayer._P1].timer = 0.1
+      player[currentPlayer._P1].quad  = player[currentPlayer._P1].quad + 1
 
-      if love.keyboard.isDown('right') then 
-        sprite[currentPlayer].px = sprite[currentPlayer].px + player[currentPlayer].sqm
+      if love.keyboard.isDown('right') then
+        sprite[currentPlayer._P1].px = sprite[currentPlayer._P1].px + player[currentPlayer._P1].sqm
       end
 
       if love.keyboard.isDown('left') then
-        sprite[currentPlayer].px = sprite[currentPlayer].px - player[currentPlayer].sqm
+        sprite[currentPlayer._P1].px = sprite[currentPlayer._P1].px - player[currentPlayer._P1].sqm
       end
 
       if love.keyboard.isDown('down') then
-        sprite[currentPlayer].py = sprite[currentPlayer].py + player[currentPlayer].sqm
+        sprite[currentPlayer._P1].py = sprite[currentPlayer._P1].py + player[currentPlayer._P1].sqm
       end
 
       if love.keyboard.isDown('up') then
-        sprite[currentPlayer].py = sprite[currentPlayer].py - player[currentPlayer].sqm
+        sprite[currentPlayer._P1].py = sprite[currentPlayer._P1].py - player[currentPlayer._P1].sqm
       end
 
-      if (player[currentPlayer].quad > player[currentPlayer].maxQuad and player[currentPlayer].direction ~= 'up') or (player[currentPlayer].quad > (player[currentPlayer].maxQuad + 1) and player[currentPlayer].direction == 'up') then
-        player[currentPlayer].quad = 2
+      if player[currentPlayer._P1].quad > player[currentPlayer._P1].maxQuad then
+        player[currentPlayer._P1].quad = 2
       end
 
-    end -- player[currentPlayer].timer > player[currentPlayer].speed
+    end -- player[currentPlayer._P1].timer > player[currentPlayer._P1].speed
 
-  end -- player[currentPlayer].idle == false
+  end -- player[currentPlayer._P1].idle == false
+  -- END P1
 
-end -- UPDATE
+  -- START P2
+  if player[currentPlayer._P2].action ~= false then
 
--- EVENT ON PRESS
-function love.keypressed(key)
+    player[currentPlayer._P2].timer = player[currentPlayer._P2].timer + dt
 
-  -- has quad?
-  if quads[currentPlayer][key] then
+    if action[player[currentPlayer._P2].action][currentPlayer._P2].quad > action[player[currentPlayer._P2].action][currentPlayer._P2].maxQuad then
 
-    if ( key == 'a' ) then
-
-      if quads[currentPlayer][key][player[currentPlayer].direction] then
-
-        player[currentPlayer].idle    = true
-        player[currentPlayer].action  = 'kick'
-
-      end -- quads[currentPlayer][key][direction]
+      player[currentPlayer._P2].quad                                    = 1
+      action[player[currentPlayer._P2].action][currentPlayer._P2].quad  = 1
+      player[currentPlayer._P2].action                                  = false
 
     else
 
-      player[currentPlayer].direction = key
-      player[currentPlayer].idle      = false
+      if player[currentPlayer._P2].timer > 0.15 then
 
-    end -- if key
+        player[currentPlayer._P2].timer                                   = 0.1
+        action[player[currentPlayer._P2].action][currentPlayer._P2].quad  = action[player[currentPlayer._P2].action][currentPlayer._P2].quad + 1
 
-  end -- has quad?
+      end
 
-end
+    end -- player[currentPlayer._P2].action ~= false
 
--- EVENT ON LEASS
-function love.keyreleased(key)
+  elseif player[currentPlayer._P2].idle == false then
 
-  if quads[currentPlayer][key] and player[currentPlayer].direction == key then
+    player[currentPlayer._P2].timer   = player[currentPlayer._P2].timer + dt
+    player[currentPlayer._P2].timeout = player[currentPlayer._P2].timeout + dt
 
-    player[currentPlayer].idle    = true
-    player[currentPlayer].quad    = 1
-    player[currentPlayer].speed   = 0.2
-    player[currentPlayer].timeout = 0
+    if player[currentPlayer._P2].timeout > 1.2 then
 
-  end -- quads[currentPlayer][key] and player[currentPlayer].direction == key
+      player[currentPlayer._P2].speed = 0.17
+      player[currentPlayer._P2].sqm   = 15
 
-end
+    end
 
+    if player[currentPlayer._P2].timer > player[currentPlayer._P2].speed then
+
+      player[currentPlayer._P2].timer = 0.1
+      player[currentPlayer._P2].quad  = player[currentPlayer._P2].quad + 1
+
+      if joystick:isDown(2) then
+        sprite[currentPlayer._P2].px = sprite[currentPlayer._P2].px + player[currentPlayer._P2].sqm
+      end
+
+      if joystick:isDown(4) then
+        sprite[currentPlayer._P2].px = sprite[currentPlayer._P2].px - player[currentPlayer._P2].sqm
+      end
+
+      if joystick:isDown(3) then
+        sprite[currentPlayer._P2].py = sprite[currentPlayer._P2].py + player[currentPlayer._P2].sqm
+      end
+
+      if joystick:isDown(1) then
+        sprite[currentPlayer._P2].py = sprite[currentPlayer._P2].py - player[currentPlayer._P2].sqm
+      end
+
+      if player[currentPlayer._P2].quad > player[currentPlayer._P2].maxQuad then
+        player[currentPlayer._P2].quad = 2
+      end
+
+    end -- player[currentPlayer._P2].timer > player[currentPlayer._P2].speed
+
+  end -- player[currentPlayer._P2].idle == false
+  -- END P2
+  
+  camera:setPosition( ball.x/1.5, ball.y/1.5 )--posição da camera x,y
+end -- UPDATE
