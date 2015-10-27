@@ -1,0 +1,281 @@
+ body{
+	  background-image: url("../img/wp.jpg");
+	  background-attachment: fixed;
+	  background-size: 100% 100%;
+ }
+ 
+ #animate-area{
+	background-image: url("../img/wp2.jpg");
+ }
+ 
+ #tela_amistoso{
+	background-image: url("../img/wp3.jpg");
+ }
+ 
+ #resumo_partida{
+	background-image: url("../img/11990-NNWYZG.jpg");
+ }
+ 
+ #animacao{
+	margin:0 auto;
+	margin-top: 4em;
+	text-align: center;
+	height: 26em;
+	width: 60em;
+	background-color: rgba(33, 98, 163, 0.9);
+	border: 3px solid rgb(23, 69, 114);
+ }
+ 
+ #animacao #d1{
+	 height: 25em;
+	 width: 20em;
+ }
+ 
+ #animacao #d1 #centro{
+	 margin-left: -4em;
+	 margin-top: 1em;
+ }
+ 
+ 
+ 
+ #animacao #d2{
+	 height: 15em;
+	 width: 20em;
+	 margin-top: -30em;
+	 margin-left: 20em;
+ }
+ 
+ #animacao #d3{
+	height: 15em;
+	width: 15em;
+	margin-top: -10em;
+	margin-left: 44.6em;
+	}
+ 
+ #animacao #d3 img{
+	 margin-top: -0.3em;
+	 margin-left: 0.3em;
+ }
+ 
+ #animacao #d4{
+	height: 10em;
+	 width: 40em;
+	 margin-left: 20em;
+}
+ 
+ #pressione{
+	 text-align: center;
+	 margin: 0 auto;
+	 margin-top: 3.5em;
+	 height: 4em;
+	 width: 30em;
+ }
+ 
+ h1, h2, h3{
+	 font-family: "Cambria", serif;
+	 color: #fff;
+ }
+ 
+ a{
+	 text-decoration: none;
+ }
+ 
+ a:hover{
+	 cursor:pointer;
+	 text-decoration: underline;
+	 color: #fff;
+ }
+ 
+ #nome_jogo{
+	margin: 0 auto;
+	margin-top: 1.5em;
+	height: 10em;
+	width: 81em;
+	background-color: rgba(33, 98, 163, 0.9);
+	border: 3px solid rgb(23, 69, 114); }
+ 
+ #m_imagem{
+	margin-left: 1.45em;
+	margin-top: 2em;
+	height: 21em;
+	width: 31em;
+	background-color: rgba(33, 98, 163, 0.9);
+	border: 3px solid rgb(23, 69, 114);
+}
+
+ #m_opcoes1{
+	 margin-left: 35em;
+	 margin-top: -21.3em;
+	 height: 22em;
+	 width: 18em;
+}
+
+#m_opcoes1 div{
+	border-radius: 0% 60px 0% 60px; 
+	background-color: rgba(33, 98, 163, 0.9);
+	border: 3px solid rgb(23, 69, 114);
+}
+
+#m_opcoes1 h1{
+	padding: 0.4em;
+	margin-left: 1em;
+	margin-top: 0em;
+}
+
+#m_opcoes1 #m1{
+	width: 18em;
+	height: 4em;	
+}
+
+#m_opcoes1 #m2{
+	margin-top: 1em;
+	width: 18em;
+	height: 4em;
+	margin-left: 3.5em;
+}
+
+#m_opcoes1 #m3{
+	margin-top: 1em;
+	margin-left: 7em;
+	width: 18em;
+	height: 4em;
+}
+
+#m_opcoes1 #m4{
+	margin-top: 1em;
+	margin-left: 10.5em;
+	width: 18em;
+	height: 4em;
+}
+
+#amistoso{
+	text-align: center;
+	margin: 0 auto;
+	margin-top: 1.5em;
+	width: 70em;
+	height: 6em;
+	background-color: rgba(33, 98, 163, 0.9);
+	border: 3px solid rgb(23, 69, 114);
+}
+
+#amistoso h1{
+	padding: 0.4em;
+	margin: 0 auto;
+	font-size: 3em;
+}
+
+#a_escolha{
+	text-align: center;
+	margin: 0 auto;
+
+	width: 45em;
+	height: 3em;
+	background-color: rgba(80, 80, 80, 0.7);
+}
+
+#a_escolha h1{
+	padding:0.2em;
+	margin: 0 auto;
+}
+
+#a_equipe1{
+	text-align: center;
+	margin-left: 7.1em;
+	margin-top: 1em;
+	width: 32em;
+	height: 20em;
+	background-color: rgba(33, 98, 163, 0.9);
+	border: 3px solid rgb(23, 69, 114);
+}
+
+#a_equipe2{
+	text-align: center;
+	margin-left: 43em;
+	margin-top: -22.4em;
+	width: 32em;
+	height: 20em;
+	background-color: rgba(33, 98, 163, 0.9);
+	border: 3px solid rgb(23, 69, 114);
+}
+
+#a_pressione{
+	margin: 0 auto;
+	text-align:center;
+	margin-top: 0em;
+}
+
+.equipe{
+	padding: 1em;
+}
+
+.time{
+	width: 29.8em;
+	height: 14em;
+	background-color: rgba(100, 170, 240, 0.7);
+	border: 1.5px solid rgba(23, 69, 114,0.8);
+	margin-left: 1em;
+}
+
+#mid{
+	margin-top: -16.5em;
+}
+
+.time #esq{
+	height: 18em;
+	width: 4em;
+}
+
+.time #mid{
+	
+}
+
+.time #dir{
+	height: 18em;
+	width: 4em;
+	margin-left: 25.8em;
+	margin-top: -18em;
+}
+
+.seta{
+	margin-top: 5em;
+	border-radius: 2px;
+}
+
+.setad{
+	margin-top: 8.65em;
+	border-radius: 2px;
+}
+
+#equipes{
+	text-align: center;
+	margin: 0 auto;
+	margin-top: 1.5em;
+	width: 70em;
+	height: 24em;
+	background-color: rgba(33, 98, 163, 0.9);
+	border: 3px solid rgb(23, 69, 114);
+}
+
+#equipes #equipe1{
+	height: 6em;
+	width: 30em;
+}
+
+#equipes #x{
+	margin-top: -6em;
+	margin-left: 30em;
+	height: 6em;
+	width: 10em;
+}
+
+#equipes #equipe2{
+	margin-top: -6em;
+	margin-left: 40em;
+	height: 6em;
+	width: 30em;
+}
+
+#equipes #informacoes_partida{
+	height: 18em;
+	width: 70em;
+}
